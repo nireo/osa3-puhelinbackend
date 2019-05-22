@@ -65,9 +65,7 @@ app.get('/api/persons/:id', (req, res) => {
 // show general info
 app.get('/info', (req, res) => {
     const day = new Date()
-    res.send(`
-        <div>Puhelinluettelossa on ${people.length} henkilöä</div>
-        <div>${day}</div>`)
+    res.send(`<div>Puhelinluettelossa on ${people.length} henkilöä</div><div>${day}</div>`)
 })
 
 // delete request
@@ -117,9 +115,12 @@ const error = (req, res) => {
     res.status(404).send({error: 'unknown endpoint'})
 }
 
+// for error message
 app.use(error)
 
+// port definitions
 const PORT = process.env.PORT || 3001
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
