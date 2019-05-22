@@ -6,3 +6,6 @@ if (process.argv.length<3 ) {
 }
 
 const url = `mongodb+srv://fullstack:${password}@cluster0-ww9qd.mongodb.net/test?retryWrites=true`
+
+mongoose.connect(url, {useNewUrlParser: true})
+
