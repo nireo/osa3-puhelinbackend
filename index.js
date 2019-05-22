@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
@@ -7,6 +8,28 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
+
+
+// mongoose stuff
+const url = `mongodb+srv://fullstack:@cluster0-ww9qd.mongodb.net/test?retryWrites=true`
+mongoose.connect(url, {useNewUrlParser: true})
+
+const personSchema = new mongoose.Schema({
+    name: String,
+    number: String,
+    id: Number
+})
+
+const Person = mongoose.model('Person', personSchema)
+
+personSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
+
 
 // static test data before database integration
 let people = [
@@ -45,7 +68,9 @@ app.use(morgan('tiny'))
 
 app.get('/api/persons', (req, res) => {
     // display the whole people list
-    res.send(people)
+    Person.find({}).then(persons => {
+        res.json(persons.map(person => person.toJSON()))
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
