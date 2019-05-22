@@ -8,7 +8,10 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('build'))
 
+
+// static test data before database integration
 let people = [
     {
         "name": "Arto Järvinen",
@@ -61,6 +64,8 @@ app.get('/api/persons/:id', (req, res) => {
     }
 })
 
+
+// show general info
 app.get('/info', (req, res) => {
     const day = new Date()
     res.send(`
@@ -68,6 +73,7 @@ app.get('/info', (req, res) => {
         <div>${day}</div>`)
 })
 
+// delete request
 app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     people = people.filter(person => person.id !== id)
@@ -75,6 +81,8 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
+
+// add
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
