@@ -9,3 +9,8 @@ const url = `mongodb+srv://fullstack:${password}@cluster0-ww9qd.mongodb.net/test
 
 mongoose.connect(url, {useNewUrlParser: true})
 
+const NoteSchema = new mongoose.Schema({
+    name: String,
+    number: String,
+    id: Number
+})
