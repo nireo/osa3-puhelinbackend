@@ -11,6 +11,8 @@ app.use(cors())
 app.use(express.static('build'))
 
 
+
+
 // static test data before database integration
 let people = [
     {
