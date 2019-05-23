@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
 const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./Models/person')
@@ -10,15 +9,6 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
-
-// const generateId = () => {
-//     // generate a valid random number to hopefully prevent duplication
-//     const maxId = people.length > 0
-//         ? Math.max(...people.map(p => p.id))
-//         : 0
-//
-//     return maxId + 1
-// }
 
 app.use(morgan('tiny'))
 
@@ -30,24 +20,34 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    Person.findById(request.params.id).then(person => {
-        res.json(person.toJSON())
-    })
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person.toJSON())
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).send({error: 'malformatted id'})
+        })
 })
 
 
 // show general info
 app.get('/info', (req, res) => {
     const day = new Date()
-    res.send(`<div>Puhelinluettelossa on ${people.length} henkilöä</div><div>${day}</div>`)
+    res.send(`<div>Puhelinluettelossa on ${Person.length} henkilöä</div><div>${day}</div>`)
 })
 
 // delete request
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    people = people.filter(person => person.id !== id)
-
-    res.status(204).end()
+    Person.findByIdAndRemove(req.params.id)
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 
