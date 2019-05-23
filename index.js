@@ -64,12 +64,14 @@ app.post('/api/persons', (req, res) => {
     })
 
     // add new person to people object
-    person.save().then(savedPerson => {
-        res.json(savedPerson.toJSON())
-    }).catch(error => next(error))
-
-    // show user the data they sent
-    res.json(person)
+    person.save()
+        .then(savedPerson => {
+            return savedPerson.toJSON()
+        })
+        .then(savedAndFormattedPerson => {
+            res.json(savedAndFormattedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.put("/api/persons/:id", (req, res, next) => {
