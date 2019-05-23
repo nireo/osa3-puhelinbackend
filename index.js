@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./Models/person')
 const app = express()
 
 app.use(bodyParser.json())
@@ -11,24 +13,31 @@ app.use(express.static('build'))
 
 
 // mongoose stuff
-const url = `mongodb+srv://fullstack:@cluster0-ww9qd.mongodb.net/test?retryWrites=true`
-mongoose.connect(url, {useNewUrlParser: true})
+// const url = `mongodb+srv://fullstack:@cluster0-ww9qd.mongodb.net/test?retryWrites=true`
+// const url = process.env.MONGODB_URI
+// mongoose.connect(url, {useNewUrlParser: true})
+//     .then(result => {
+//         console.log("connected to MongoDB")
+//     })
+//     .catch(error => {
+//         console.log("error connecting to MongoDB:", m)
+//     })
+//
+// const personSchema = new mongoose.Schema({
+//     name: String,
+//     number: String,
+//     id: String
+// })
+//
+// const Person = mongoose.model('Person', personSchema)
 
-const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
-    id: String
-})
-
-const Person = mongoose.model('Person', personSchema)
-
-personSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        returnedObject.id = returnedObject._id.toString()
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
-})
+// personSchema.set('toJSON', {
+//     transform: (document, returnedObject) => {
+//         returnedObject.id = returnedObject._id.toString()
+//         delete returnedObject._id
+//         delete returnedObject.__v
+//     }
+// })
 
 
 // static test data before database integration
@@ -74,16 +83,9 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = people.find(p => p.id === id)
-
-    if (person) {
-        // display the object with the requested id
-        res.json(person)
-    } else {
-        // code executes if a person is not found meaning a 404-not found error
-        res.status(404).end()
-    }
+    Person.findById(request.params.id).then(person => {
+        res.json(person.toJSON())
+    })
 })
 
 
