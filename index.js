@@ -33,7 +33,6 @@ app.get('/api/persons/:id', (req, res) => {
         })
 })
 
-
 // show general info
 app.get('/info', (req, res) => {
     const day = new Date()
@@ -65,10 +64,9 @@ app.post('/api/persons', (req, res) => {
     })
 
     // add new person to people object
-    person.save().then(response => {
-        console.log(`lisättiin nimi:${body.name} numero:${body.number} `)
-        console.log(response)
-    })
+    person.save().then(savedPerson => {
+        res.json(savedPerson.toJSON())
+    }).catch(error => next(error))
 
     // show user the data they sent
     res.json(person)
@@ -77,10 +75,19 @@ app.post('/api/persons', (req, res) => {
 app.put("/api/persons/:id", (req, res, next) => {
     const body = req.body
 
+    if (body.name === undefined) {
+        res.status(400).send({error: "no name"})
+    }
+
+    if (body.number === undefined) {
+        res.status(400).send({error: "no number"})
+    }
+
     const person = {
         name: body.name,
         number: body.number
     }
+
     Person.findByIdAndUpdate(req.params.id, person, {new: true})
         .then(updatedNote => {
             res.json(updatedNote.toJSON())
@@ -94,6 +101,19 @@ const unknownEndpoint = (req, res) => {
 
 // for error message
 app.use(unknownEndpoint)
+
+// for handling bad requests
+const errorHandler = (error, req, res, next) => {
+    console.log(error.message)
+
+    if (error.name === 'CastError' && error.kind == 'ObjectId') {
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 // port definitions
 const PORT = process.env.PORT || 3001
