@@ -11,14 +11,14 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
 
-const generateId = () => {
-    // generate a valid random number to hopefully prevent duplication
-    const maxId = people.length > 0
-        ? Math.max(...people.map(p => p.id))
-        : 0
-
-    return maxId + 1
-}
+// const generateId = () => {
+//     // generate a valid random number to hopefully prevent duplication
+//     const maxId = people.length > 0
+//         ? Math.max(...people.map(p => p.id))
+//         : 0
+//
+//     return maxId + 1
+// }
 
 app.use(morgan('tiny'))
 
@@ -60,26 +60,16 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({error: 'content missing'})
     }
 
-    // logic to remove duplication with people
-    if (people.find(p => p.name === body.name)) {
-        return res.status(400).json(
-            {error: 'name already in list'}
-        )
-    } else if (people.find(p => p.number === body.number)) {
-        return res.status(400).json(
-            {error: 'number already in list'}
-        )
-    }
-
-    // person entry template
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId()
-    }
+        number: body.number
+    })
 
     // add new person to people object
-    people.concat(person)
+    person.save().then(response => {
+        console.log(`lisättiin nimi:${body.name} numero:${body.number} `)
+        console.log(response)
+    })
 
     // show user the data they sent
     res.json(person)
