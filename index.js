@@ -11,30 +11,6 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
 
-// static test data before database integration
-let people = [
-    {
-        "name": "Arto Järvinen",
-        "number": "040-123456",
-        "id": 1
-    },
-    {
-        "name": "Lea Kutvonen",
-        "number": "040-123456",
-        "id": 2
-    },
-    {
-        "name": "Frederik Mannen",
-        "number": "1123-12512",
-        "id": 3
-    },
-    {
-        "name": "Sauli Niinistö",
-        "number": "040-1291259",
-        "id": 4
-    }
-]
-
 const generateId = () => {
     // generate a valid random number to hopefully prevent duplication
     const maxId = people.length > 0
