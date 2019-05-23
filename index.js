@@ -11,35 +11,6 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
 
-
-// mongoose stuff
-// const url = `mongodb+srv://fullstack:@cluster0-ww9qd.mongodb.net/test?retryWrites=true`
-// const url = process.env.MONGODB_URI
-// mongoose.connect(url, {useNewUrlParser: true})
-//     .then(result => {
-//         console.log("connected to MongoDB")
-//     })
-//     .catch(error => {
-//         console.log("error connecting to MongoDB:", m)
-//     })
-//
-// const personSchema = new mongoose.Schema({
-//     name: String,
-//     number: String,
-//     id: String
-// })
-//
-// const Person = mongoose.model('Person', personSchema)
-
-// personSchema.set('toJSON', {
-//     transform: (document, returnedObject) => {
-//         returnedObject.id = returnedObject._id.toString()
-//         delete returnedObject._id
-//         delete returnedObject.__v
-//     }
-// })
-
-
 // static test data before database integration
 let people = [
     {
