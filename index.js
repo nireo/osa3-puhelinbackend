@@ -5,11 +5,9 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./Models/person')
 const app = express()
-
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('build'))
-
 app.use(morgan('tiny'))
 
 app.get('/api/persons', (req, res) => {
@@ -75,12 +73,12 @@ app.post('/api/persons', (req, res) => {
     res.json(person)
 })
 
-const error = (req, res) => {
+const unknownEndpoint = (req, res) => {
     res.status(404).send({error: 'unknown endpoint'})
 }
 
 // for error message
-app.use(error)
+app.use(unknownEndpoint())
 
 // port definitions
 const PORT = process.env.PORT || 3001
